@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎯 Activity Suggestion · Offline</title>
+    <link rel="icon" href="data:,">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(145deg, #f5f7fe 0%, #e9ecf5 100%);
+            min-height: 100vh; display: flex; align-items: center;
+            justify-content: center; padding: 1.5rem;
+        }
+        .app-card {
+            max-width: 1000px; width: 100%;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 2.5rem; padding: 2rem 2rem 2.5rem;
+            box-shadow: 0 30px 50px -20px rgba(0,20,40,0.25),
+                        0 0 0 1px rgba(255,255,255,0.7) inset;
+        }
+        h1 {
+            display: flex; align-items: center; gap: 0.75rem;
+            font-weight: 600; font-size: 2.1rem; letter-spacing: -0.02em;
+            color: #0b1e33; margin-bottom: 0.25rem;
+        }
+        .subhead {
+            font-size: 1rem; color: #42617e; margin-bottom: 2rem;
+            display: flex; flex-wrap: wrap; justify-content: space-between;
+            align-items: center; border-bottom: 1px solid #cddae9;
+            padding-bottom: 1rem;
+        }
+        .subhead .pill {
+            font-size: 0.8rem; font-weight: 600; color: #1b5b9c;
+            background: #e4eefa; border: 1px solid #b7d1e9;
+            padding: 0.25rem 0.9rem; border-radius: 50px;
+        }
+        .filter-bar {
+            display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;
+            margin-bottom: 2rem; background: #ffffffd9; padding: 1rem 1.5rem;
+            border-radius: 4rem; box-shadow: 0 4px 12px rgba(0,20,30,0.06);
+            border: 1px solid #ffffff;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 0.3rem; }
+        .filter-group label {
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.03em; color: #466684; padding-left: 0.5rem;
+        }
+        .filter-group select {
+            background: white; border: 1px solid #cbd7e6; border-radius: 2rem;
+            padding: 0.65rem 1.2rem; font-family: 'Inter', sans-serif;
+            font-size: 0.9rem; color: #0b1e33; outline: none;
+            transition: 0.15s; min-width: 140px; font-weight: 500;
+        }
+        .filter-group select:focus { border-color: #3c7ac0; box-shadow: 0 0 0 3px rgba(60,122,192,0.2); }
+        .action-buttons { display: flex; gap: 0.8rem; margin-left: auto; flex-wrap: wrap; }
+        .btn {
+            border: none; background: #0b1e33; color: white; font-weight: 600;
+            padding: 0.7rem 1.8rem; border-radius: 2rem; font-size: 0.95rem;
+            display: inline-flex; align-items: center; gap: 0.6rem;
+            cursor: pointer; transition: 0.15s;
+            box-shadow: 0 6px 14px rgba(11,30,51,0.2);
+            letter-spacing: 0.01em; border: 1px solid #1b3d5e;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn:hover { background: #1a3550; transform: translateY(-2px); box-shadow: 0 12px 18px -6px rgba(11,30,51,0.3); }
+        .btn:active { transform: translateY(0); box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        .btn-outline { background: transparent; color: #1e3e5c; border: 1px solid #a9bed6; box-shadow: none; font-weight: 500; }
+        .btn-outline:hover { background: #e6edf7; border-color: #7b9bc2; box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        .btn:disabled { opacity: 0.5; pointer-events: none; filter: grayscale(0.4); }
+        .activity-card {
+            background: white; border-radius: 2rem; padding: 2rem 2rem 1.8rem;
+            margin-top: 1.5rem;
+            box-shadow: 0 15px 30px -12px rgba(20,40,70,0.15),
+                        0 0 0 1px rgba(255,255,255,0.9) inset;
+            border: 1px solid #e2eaf2; min-height: 280px;
+            display: flex; flex-direction: column;
+        }
+        .activity-empty {
+            color: #6f8aa8; font-size: 1.1rem; text-align: center;
+            margin: auto; display: flex; flex-direction: column; gap: 0.5rem;
+        }
+        .activity-empty span { font-size: 2.5rem; opacity: 0.7; }
+        .activity-title {
+            font-size: 2rem; font-weight: 700; line-height: 1.2;
+            color: #09203b; margin-bottom: 1.25rem;
+            display: flex; align-items: center; flex-wrap: wrap; gap: 0.75rem;
+        }
+        .badge {
+            background: #e4eefa; border-radius: 50px; padding: 0.3rem 1.2rem;
+            font-size: 0.8rem; font-weight: 600; color: #1b4c7a;
+            text-transform: uppercase; letter-spacing: 0.03em;
+            border: 1px solid #b7d1e9; white-space: nowrap;
+        }
+        .meta-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr));
+            gap: 1.2rem 1rem; margin: 1rem 0 1.8rem;
+            background: #f8fbfe; padding: 1.4rem;
+            border-radius: 1.5rem; border: 1px solid #d9e4f0;
+        }
+        .meta-item { display: flex; align-items: flex-start; gap: 0.7rem; }
+        .meta-icon { font-size: 1.4rem; line-height: 1; opacity: 0.8; }
+        .meta-content { display: flex; flex-direction: column; }
+        .meta-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #5c7f9f; }
+        .meta-value { font-weight: 600; color: #0b1e33; font-size: 1rem; line-height: 1.4; }
+        .activity-link {
+            margin-top: auto; display: inline-flex; align-items: center; gap: 0.4rem;
+            color: #1b5b9c; text-decoration: none; font-weight: 500;
+            padding: 0.5rem 0; width: fit-content;
+            border-bottom: 1px dashed #98b8da;
+        }
+        .activity-link:hover { color: #0a3560; border-bottom-color: #0a3560; }
+        .spinner {
+            width: 32px; height: 32px;
+            border: 4px solid #d4e1f0; border-top: 4px solid #1b4c7a;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            margin: 2rem auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .error-message {
+            background: #fff7e6; border: 1px solid #ffe0a8; color: #8a6d2b;
+            padding: 1.2rem 1.8rem; border-radius: 2rem; font-weight: 500;
+            display: flex; align-items: center; gap: 0.8rem; margin-top: 1.5rem;
+        }
+        @media (max-width: 680px) {
+            .app-card { padding: 1.5rem; }
+            h1 { font-size: 1.7rem; }
+            .filter-bar { border-radius: 2rem; padding: 1.2rem; }
+            .action-buttons { margin-left: 0; width: 100%; }
+            .btn { flex: 1; justify-content: center; }
+            .activity-title { font-size: 1.6rem; }
+        }
+    </style>
+</head>
+<body>
+    <main class="app-card">
+        <h1><span>🎲</span> Bored? Not anymore.</h1>
+        <div class="subhead">
+            <span>Activity suggester · <strong>offline</strong> dataset</span>
+            <span class="pill">✅ no network needed</span>
+        </div>
+
+        <div class="filter-bar">
+            <div class="filter-group">
+                <label for="typeFilter">Type</label>
+                <select id="typeFilter">
+                    <option value="">any type</option>
+                    <option value="education">education</option>
+                    <option value="recreational">recreational</option>
+                    <option value="social">social</option>
+                    <option value="charity">charity</option>
+                    <option value="cooking">cooking</option>
+                    <option value="relaxation">relaxation</option>
+                    <option value="busywork">busywork</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="participantsFilter">Participants</label>
+                <select id="participantsFilter">
+                    <option value="">any</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="8">8</option>
+                </select>
+            </div>
+            <div class="action-buttons">
+                <button class="btn" id="randomBtn" title="Get a completely random activity">
+                    <span>✨</span> Surprise me
+                </button>
+                <button class="btn btn-outline" id="filterBtn" title="Apply filters and get matching activity">
+                    <span>🔍</span> Filter
+                </button>
+            </div>
+        </div>
+
+        <div id="activityContainer">
+            <div class="activity-card">
+                <div class="activity-empty">
+                    <span>🤔</span>
+                    <p>No activity loaded yet.<br>Hit <strong>“Surprise me”</strong> or use filters.</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="errorContainer" style="display: none;"></div>
+    </main>
+
+    <script>
+        (function() {
+            const activityContainer  = document.getElementById('activityContainer');
+            const errorContainer     = document.getElementById('errorContainer');
+            const randomBtn          = document.getElementById('randomBtn');
+            const filterBtn          = document.getElementById('filterBtn');
+            const typeFilter         = document.getElementById('typeFilter');
+            const participantsFilter = document.getElementById('participantsFilter');
+
+            // ---------- Offline dataset (from the public Bored API dataset) ----------
+            const ACTIVITIES = [
+                { activity: "Learn Express.js", type: "education", participants: 1, price: 0.1, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "https://expressjs.com/", availability: 0.25, key: "3943506" },
+                { activity: "Learn React.js", type: "education", participants: 1, price: 0.2, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "https://reactjs.org/", availability: 0.5, key: "7890123" },
+                { activity: "Read a book", type: "relaxation", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.4, key: "1024" },
+                { activity: "Listen to music", type: "relaxation", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.6, key: "2048" },
+                { activity: "Bake cookies", type: "cooking", participants: 2, price: 0.2, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.3, key: "3072" },
+                { activity: "Cook a new recipe", type: "cooking", participants: 1, price: 0.3, accessibility: "Some challenges", duration: "hours", kidFriendly: false, link: "", availability: 0.2, key: "4096" },
+                { activity: "Have a picnic", type: "social", participants: 4, price: 0.2, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.3, key: "5120" },
+                { activity: "Play board games", type: "social", participants: 4, price: 0.1, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.5, key: "6144" },
+                { activity: "Volunteer at a shelter", type: "charity", participants: 1, price: 0, accessibility: "Some challenges", duration: "hours", kidFriendly: false, link: "", availability: 0.2, key: "7168" },
+                { activity: "Donate old clothes", type: "charity", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.7, key: "8192" },
+                { activity: "Go for a run", type: "recreational", participants: 1, price: 0, accessibility: "Some challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.8, key: "9216" },
+                { activity: "Take a walk in the park", type: "recreational", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.9, key: "10240" },
+                { activity: "Do a puzzle", type: "recreational", participants: 1, price: 0.1, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.4, key: "11264" },
+                { activity: "Meditate for 10 minutes", type: "relaxation", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.9, key: "12288" },
+                { activity: "Take a bubble bath", type: "relaxation", participants: 1, price: 0.1, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: false, link: "", availability: 0.5, key: "13312" },
+                { activity: "Clean out your closet", type: "busywork", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.6, key: "14336" },
+                { activity: "Organize your desk", type: "busywork", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.8, key: "15360" },
+                { activity: "Learn a new language", type: "education", participants: 1, price: 0, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "https://www.duolingo.com/", availability: 0.3, key: "16384" },
+                { activity: "Watch a documentary", type: "education", participants: 1, price: 0.1, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.7, key: "17408" },
+                { activity: "Play a video game", type: "recreational", participants: 2, price: 0.5, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.4, key: "18432" },
+                { activity: "Karaoke night", type: "social", participants: 4, price: 0.3, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.3, key: "19456" },
+                { activity: "Host a movie marathon", type: "social", participants: 4, price: 0.2, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.4, key: "20480" },
+                { activity: "Write a short story", type: "recreational", participants: 1, price: 0, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.3, key: "21504" },
+                { activity: "Draw or paint", type: "recreational", participants: 1, price: 0.2, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.5, key: "22528" },
+                { activity: "Make a playlist", type: "recreational", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.8, key: "23552" },
+                { activity: "Plant a small herb garden", type: "cooking", participants: 2, price: 0.3, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.2, key: "24576" },
+                { activity: "Try a new coffee shop", type: "social", participants: 2, price: 0.2, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.6, key: "25600" },
+                { activity: "Visit a museum", type: "education", participants: 2, price: 0.4, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.4, key: "26624" },
+                { activity: "Do a home workout", type: "recreational", participants: 1, price: 0, accessibility: "Some challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.7, key: "27648" },
+                { activity: "Write in a journal", type: "relaxation", participants: 1, price: 0, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.9, key: "28672" },
+                { activity: "Learn a magic trick", type: "recreational", participants: 1, price: 0.1, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.3, key: "29696" },
+                { activity: "Make a scrapbook", type: "recreational", participants: 2, price: 0.2, accessibility: "Few to no challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.3, key: "30720" },
+                { activity: "Bake a cake from scratch", type: "cooking", participants: 2, price: 0.3, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.25, key: "31744" },
+                { activity: "Have a tea tasting", type: "relaxation", participants: 2, price: 0.2, accessibility: "Few to no challenges", duration: "minutes", kidFriendly: true, link: "", availability: 0.5, key: "32768" },
+                { activity: "Learn to juggle", type: "recreational", participants: 1, price: 0, accessibility: "Some challenges", duration: "hours", kidFriendly: true, link: "", availability: 0.4, key: "33792" }
+            ];
+
+            // ---------- helpers ----------
+            function showLoading() {
+                activityContainer.innerHTML = `
+                    <div class="activity-card" style="justify-content: center;">
+                        <div class="spinner"></div>
+                        <p style="text-align: center; color: #42617e; margin-top: 0.5rem;">Picking something fun…</p>
+                    </div>
+                `;
+                errorContainer.style.display = 'none';
+            }
+
+            function showError(message) {
+                errorContainer.style.display = 'block';
+                errorContainer.innerHTML = `
+                    <div class="error-message">
+                        <span>🔎</span>
+                        <span>${message}</span>
+                    </div>
+                `;
+                activityContainer.innerHTML = `
+                    <div class="activity-card" style="justify-content: center;">
+                        <div class="activity-empty">
+                            <span>🗂️</span>
+                            <p>No matching activities. Try adjusting the filters.</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderActivity(activity) {
+                const availabilityPercent = activity.availability !== undefined
+                    ? `${Math.round(activity.availability * 100)}%` : '—';
+                const priceDisplay = activity.price !== undefined
+                    ? (activity.price === 0 ? 'Free' : `${(activity.price * 100).toFixed(0)}¢`) : '—';
+                const kidFriendly = activity.kidFriendly === true ? '✅ Yes'
+                                  : (activity.kidFriendly === false ? '❌ No' : '—');
+                const accessibility = activity.accessibility || '—';
+                const duration      = activity.duration || '—';
+                const participants  = activity.participants ?? '—';
+                const type          = activity.type || '—';
+
+                let linkHtml = '';
+                if (activity.link && activity.link.trim() !== '') {
+                    let url = activity.link.trim();
+                    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+                    linkHtml = `
+                        <a href="${url}" target="_blank" rel="noopener noreferrer" class="activity-link">
+                            <span>🔗</span> Open resource
+                        </a>
+                    `;
+                }
+
+                activityContainer.innerHTML = `
+                    <div class="activity-card">
+                        <div class="activity-title">
+                            ${activity.activity}
+                            <span class="badge">${type}</span>
+                        </div>
+                        <div class="meta-grid">
+                            <div class="meta-item">
+                                <div class="meta-icon">👥</div>
+                                <div class="meta-content">
+                                    <span class="meta-label">Participants</span>
+                                    <span class="meta-value">${participants}</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-icon">💰</div>
+                                <div class="meta-content">
+                                    <span class="meta-label">Price</span>
+                                    <span class="meta-value">${priceDisplay}</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-icon">📈</div>
+                                <div class="meta-content">
+                                    <span class="meta-label">Availability</span>
+                                    <span class="meta-value">${availabilityPercent}</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-icon">⏳</div>
+                                <div class="meta-content">
+                                    <span class="meta-label">Duration</span>
+                                    <span class="meta-value">${duration}</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-icon">🧗</div>
+                                <div class="meta-content">
+                                    <span class="meta-label">Accessibility</span>
+                                    <span class="meta-value">${accessibility}</span>
+                                </div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-icon">🧸</div>
+                                <div class="meta-content">
+                                    <span class="meta-label">Kid friendly</span>
+                                    <span class="meta-value">${kidFriendly}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.4rem;">
+                            ${linkHtml || '<span style="color:#849bb3; font-size:0.9rem;">No link provided</span>'}
+                            <span style="font-size:0.75rem; color:#7f9ab8; margin-left:auto;">#${activity.key}</span>
+                        </div>
+                    </div>
+                `;
+                errorContainer.style.display = 'none';
+            }
+
+            // ---------- action handlers (pure offline logic) ----------
+            function pickRandom() {
+                showLoading();
+                // small delay so the spinner is visible, feels responsive
+                setTimeout(() => {
+                    const idx = Math.floor(Math.random() * ACTIVITIES.length);
+                    renderActivity(ACTIVITIES[idx]);
+                }, 180);
+            }
+
+            function pickFiltered() {
+                showLoading();
+                const type = typeFilter.value.trim();
+                const participants = participantsFilter.value.trim();
+
+                setTimeout(() => {
+                    const matches = ACTIVITIES.filter(a => {
+                        if (type && a.type !== type) return false;
+                        if (participants && String(a.participants) !== String(participants)) return false;
+                        return true;
+                    });
+
+                    if (matches.length === 0) {
+                        showError('No activities matched your filters. Try something broader.');
+                        return;
+                    }
+
+                    const idx = Math.floor(Math.random() * matches.length);
+                    renderActivity(matches[idx]);
+                }, 180);
+            }
+
+            randomBtn.addEventListener('click', pickRandom);
+            filterBtn.addEventListener('click', pickFiltered);
+
+            console.log('✨ Offline activity suggester ready — ' + ACTIVITIES.length + ' activities loaded.');
+        })();
+    </script>
+</body>
+</html>
