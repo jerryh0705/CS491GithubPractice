@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Paddle Ball Game</title>
+  <style>
+    /* All CSS is inline within this <style> element (Requirement 8.2) */
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #222;
+      color: #eee;
+      gap: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    #gameCanvas {
+      background-color: #000;
+      border: 2px solid #555;
+      display: block;
+    }
+
+    #scoreDisplay {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    #restartButton {
+      padding: 8px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background-color: #4a90d9;
+      color: #fff;
+    }
+
+    #restartButton:hover {
+      background-color: #357abd;
+    }
+
+    /* Messages are hidden by default; shown only in terminal states */
+    #gameOverMessage,
+    #winMessage {
+      display: none;
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    #gameOverMessage {
+      color: #ff5555;
+    }
+
+    #winMessage {
+      color: #55ff55;
+    }
+  </style>
+</head>
+<body>
+  <h1>Paddle Ball Game</h1>
+
+  <!-- Score display, initially "Score: 0" (Requirement 5.1) -->
+  <p id="scoreDisplay">Score: 0</p>
+
+  <!-- Canvas the game is rendered on -->
+  <canvas id="gameCanvas" width="480" height="320"></canvas>
+
+  <!-- Restart button resets the game (Requirement 7) -->
+  <button id="restartButton">Restart</button>
+
+  <!-- Terminal-state messages, hidden by default (Requirements 3.2, 6.2) -->
+  <p id="gameOverMessage">Game Over</p>
+  <p id="winMessage">You Win!</p>
+
+  <script>
+    /* All JavaScript is inline within this <script> element (Requirement 8.3).
+       No external src attribute is used.
+       Pure game logic is exposed on window.Game so tests can reach it via jsdom
+       with a stubbed canvas.getContext('2d'). Later tasks attach pure functions
+       (constants, state factory, physics, collisions, rendering, input, loop)
+       to this namespace. */
+    (function () {
+      "use strict";
+
+      // --- Constants / Configuration ---------------------------------------
+      // Fixed game parameters shared across the logic and render layers.
+      // Dimensions match the <canvas width="480" height="320"> in the HTML
+      // body above; geometry is tuned for that 480x320 playfield.
+
+      const CANVAS_WIDTH = 480; // Canvas width (px), matches the canvas element
+      const CANVAS_HEIGHT = 320; // Canvas height (px), matches the canvas element
+
+      const BALL_RADIUS = 8; // Ball radius (px)
+      // Per-frame ball speed magnitude (px/frame). createInitialState() (a
+      // later task) uses this to derive the initial dx/dy components; for now
+      // it is only the speed magnitude, not a velocity vector.
+      const BALL_SPEED = 4;
+
+      const PADDLE_WIDTH = 72; // Paddle width (px)
+      const PADDLE_HEIGHT = 12; // Paddle height (px)
+      const PADDLE_SPEED = 7; // Per-frame paddle speed (px/frame)
+      // Paddle top-edge y (px), fixed near the bottom of the canvas.
+      const PADDLE_Y = CANVAS_HEIGHT - 24;
+
+      // Single-row brick layout (Requirement 4.1): one row of BRICK_COUNT
+      // bricks laid out left-to-right with BRICK_PADDING between them,
+      // offset from the top-left corner by the values below.
+      const BRICK_COUNT = 5; // Number of bricks in the single row
+      const BRICK_WIDTH = 70; // Brick width (px)
+      const BRICK_HEIGHT = 20; // Brick height (px)
+      const BRICK_PADDING = 10; // Horizontal gap between bricks (px)
+      const BRICK_OFFSET_TOP = 40; // Distance of the row from the top (px)
+      const BRICK_OFFSET_LEFT = 35; // Distance of the row from the left (px)
+
+      // --- State Machine Enum ----------------------------------------------
+      // String-valued so the status reads naturally when logged/serialised.
+      // Drives the update loop: the ball only advances when status === ACTIVE,
+      // which satisfies the terminal-state ball-stop requirements (3.3, 6.3).
+      const STATES = {
+        ACTIVE: "ACTIVE",
+        GAME_OVER: "GAME_OVER",
+        WIN: "WIN",
+      };
+
+      // --- Data Model Field Contracts --------------------------------------
+      // The objects below document the fixed field contracts for each model.
+      // They are plain JS objects (no classes); the actual model instances
+      // (also plain objects carrying these fields) are built by
+      // createInitialState() in a later task. Each entry maps a field name to a
+      // short type description, mirroring the design doc's model tables. Tests
+      // can read these contracts to verify that created state objects carry
+      // every expected field.
+      const MODELS = {
+        // Ball — the moving circle that bounces off walls, paddle, and bricks.
+        Ball: {
+          x: "number", // Center x coordinate (px)
+          y: "number", // Center y coordinate (px)
+          dx: "number", // Per-frame horizontal velocity (px/frame)
+          dy: "number", // Per-frame vertical velocity (px/frame)
+          radius: "number", // Ball radius (px), equals BALL_RADIUS
+        },
+        // Paddle — the player-controlled rectangle near the bottom.
+        Paddle: {
+          x: "number", // Left edge x coordinate (px)
+          y: "number", // Top edge y coordinate (px), fixed at PADDLE_Y
+          width: "number", // Paddle width (px)
+          height: "number", // Paddle height (px)
+          speed: "number", // Per-frame horizontal speed (px/frame)
+        },
+        // Brick — a destructible rectangle in the top row.
+        Brick: {
+          x: "number", // Left edge x coordinate (px)
+          y: "number", // Top edge y coordinate (px)
+          width: "number", // Brick width (px)
+          height: "number", // Brick height (px)
+          exists: "boolean", // Whether the brick is still on the canvas
+        },
+        // GameState — the single root state object the loop mutates.
+        GameState: {
+          ball: "Ball", // Current ball state
+          paddle: "Paddle", // Current paddle state
+          bricks: "Brick[]", // Flat array of bricks for the single row (Req 4.1)
+          score: "number", // Current score, increments per brick (Req 5.2)
+          status: "'ACTIVE' | 'GAME_OVER' | 'WIN'", // State machine state
+          keys: "{ left: boolean, right: boolean }", // Arrow-key pressed state
+        },
+      };
+
+      // --- State Factory ---------------------------------------------------
+      // Builds the initial GameState: a fresh ball at the center of the canvas
+      // moving with a non-zero velocity, a centered paddle, a single flat row
+      // of BRICK_COUNT bricks all present (Requirement 4.1), score 0
+      // (Requirement 5.1), status ACTIVE, and no keys pressed. Used both on
+      // first load and on restart. Pure (no side effects, no DOM/canvas
+      // access) so it can be property-tested in jsdom via window.Game.
+      //
+      // Validates: Requirements 4.1 (single row of bricks), 5.1 (initial score 0)
+      function createInitialState() {
+        // Fresh ball at the canvas center. Both dx and dy are non-zero so the
+        // ball moves every frame; derived from BALL_SPEED. dy is negative so
+        // the ball heads upward (toward the bricks) at the start.
+        const ball = {
+          x: CANVAS_WIDTH / 2,
+          y: CANVAS_HEIGHT / 2,
+          dx: BALL_SPEED,
+          dy: -BALL_SPEED,
+          radius: BALL_RADIUS,
+        };
+
+        // Paddle centered horizontally, fixed near the bottom edge.
+        const paddle = {
+          x: (CANVAS_WIDTH - PADDLE_WIDTH) / 2,
+          y: PADDLE_Y,
+          width: PADDLE_WIDTH,
+          height: PADDLE_HEIGHT,
+          speed: PADDLE_SPEED,
+        };
+
+        // Single flat row (1D array) of BRICK_COUNT bricks (Requirement 4.1),
+        // laid out left-to-right with BRICK_PADDING between them, all present.
+        const bricks = [];
+        for (let i = 0; i < BRICK_COUNT; i++) {
+          bricks.push({
+            x: BRICK_OFFSET_LEFT + i * (BRICK_WIDTH + BRICK_PADDING),
+            y: BRICK_OFFSET_TOP,
+            width: BRICK_WIDTH,
+            height: BRICK_HEIGHT,
+            exists: true,
+          });
+        }
+
+        return {
+          ball,
+          paddle,
+          bricks,
+          score: 0,
+          status: STATES.ACTIVE,
+          keys: { left: false, right: false },
+        };
+      }
+
+      // --- Paddle Movement (Pure Logic) -----------------------------------
+      // clampPaddle keeps the paddle within the horizontal canvas bounds so it
+      // can never leave the playfield (Requirement 1.3). It mutates
+      // state.paddle.x in place to clamp it to [0, CANVAS_WIDTH - paddle.width]
+      // and returns the same state object, matching the design's pure-function
+      // contract (take state, mutate/return it, no DOM or canvas access). Using
+      // state.paddle.width (rather than the PADDLE_WIDTH constant) keeps the
+      // clamp correct for any paddle width the state happens to carry.
+      //
+      // Validates: Requirement 1.3
+      function clampPaddle(state) {
+        const maxX = CANVAS_WIDTH - state.paddle.width;
+        if (state.paddle.x < 0) {
+          state.paddle.x = 0;
+        } else if (state.paddle.x > maxX) {
+          state.paddle.x = maxX;
+        }
+        return state;
+      }
+
+      // updatePaddle moves the paddle left/right according to the pressed keys
+      // (Requirements 1.1, 1.2), but only while the game is ACTIVE — in terminal
+      // states (GAME_OVER / WIN) the paddle does not move, consistent with the
+      // state machine. After applying the movement it calls clampPaddle to keep
+      // the paddle in bounds (Requirement 1.3). Both left and right may be
+      // pressed at once; they then cancel out (left then right = net zero),
+      // which is fine. The movement uses the fixed PADDLE_SPEED constant so the
+      // paddle always advances at the configured per-frame speed.
+      //
+      // Validates: Requirements 1.1, 1.2, 1.3
+      function updatePaddle(state) {
+        if (state.status !== STATES.ACTIVE) {
+          return state;
+        }
+        if (state.keys.left) {
+          state.paddle.x -= PADDLE_SPEED;
+        }
+        if (state.keys.right) {
+          state.paddle.x += PADDLE_SPEED;
+        }
+        clampPaddle(state);
+        return state;
+      }
+
+      // --- Ball Movement & Wall Bouncing (Pure Logic) ---------------------
+      // ballHitsWall is a pure boundary helper: given a state and a named edge
+      // ('top', 'left', 'right'), it returns true when the ball has reached or
+      // passed that wall. It reads only state.ball and the CANVAS_WIDTH
+      // constant, so it has no side effects and can be unit- and
+      // property-tested in jsdom via window.Game. The bottom edge is handled
+      // separately by task 5.1 (the game-over transition), so it is not an
+      // edge this helper tests.
+      //
+      // Validates: Requirements 2.2, 2.3, 2.4 (boundary tests for top/left/right)
+      function ballHitsWall(state, edge) {
+        const { x, y, radius } = state.ball;
+        switch (edge) {
+          case 'top':
+            return y - radius <= 0;
+          case 'left':
+            return x - radius <= 0;
+          case 'right':
+            return x + radius >= CANVAS_WIDTH;
+          default:
+            return false;
+        }
+      }
+
+      // bounceWalls reverses the perpendicular velocity component and clamps
+      // the ball position to the wall edge for the top, left, and right walls
+      // (Requirements 2.2, 2.3, 2.4). After a bounce the relevant velocity
+      // component is forced to point away from the wall via Math.abs, so a ball
+      // that already overshot the wall still bounces the right way, and the
+      // position is clamped to the wall so the ball never sits inside or past
+      // it. The bottom edge is intentionally NOT handled here — that is task
+      // 5.1's game-over transition. bounceWalls mutates state in place and
+      // returns it.
+      //
+      // Validates: Requirements 2.2, 2.3, 2.4
+      function bounceWalls(state) {
+        const { ball } = state;
+        const radius = ball.radius;
+
+        // Top wall: reverse vertical direction downward and clamp to the top.
+        if (ball.y - radius <= 0) {
+          ball.dy = Math.abs(ball.dy);
+          ball.y = radius;
+        }
+
+        // Left wall: reverse horizontal direction rightward and clamp to left.
+        if (ball.x - radius <= 0) {
+          ball.dx = Math.abs(ball.dx);
+          ball.x = radius;
+        }
+
+        // Right wall: reverse horizontal direction leftward and clamp to right.
+        if (ball.x + radius >= CANVAS_WIDTH) {
+          ball.dx = -Math.abs(ball.dx);
+          ball.x = CANVAS_WIDTH - radius;
+        }
+
+        return state;
+      }
+
+      // updateBall advances the ball by its per-frame velocity (dx, dy) but
+      // only while the game is ACTIVE. In terminal states (GAME_OVER / WIN) it
+      // returns the state unchanged, so the ball freezes (Requirements 3.3,
+      // 6.3). It only moves the ball — wall bouncing is handled separately by
+      // bounceWalls (called by the update orchestrator in task 7.1), so this
+      // function does not call bounceWalls. Mutates state in place, returns it.
+      //
+      // Validates: Requirement 2.1 (ball moves at constant speed in active state)
+      function updateBall(state) {
+        if (state.status !== STATES.ACTIVE) {
+          return state;
+        }
+        state.ball.x += state.ball.dx;
+        state.ball.y += state.ball.dy;
+        return state;
+      }
+
+      // --- Namespace -------------------------------------------------------
+      // Expose constants, the state enum, the data-model contracts, and the
+      // pure logic functions so tests (and later tasks) can read/call them via
+      // window.Game after loading this file into jsdom. Pure logic functions
+      // are attached here as they are implemented by later tasks.
+      const Game = {
+        // Configuration constants
+        CANVAS_WIDTH,
+        CANVAS_HEIGHT,
+        BALL_RADIUS,
+        BALL_SPEED,
+        PADDLE_WIDTH,
+        PADDLE_HEIGHT,
+        PADDLE_SPEED,
+        PADDLE_Y,
+        BRICK_COUNT,
+        BRICK_WIDTH,
+        BRICK_HEIGHT,
+        BRICK_PADDING,
+        BRICK_OFFSET_TOP,
+        BRICK_OFFSET_LEFT,
+        // State machine enum
+        STATES,
+        // Data-model field contracts (documentation objects)
+        MODELS,
+        // Pure logic functions
+        createInitialState,
+        updatePaddle,
+        clampPaddle,
+        ballHitsWall,
+        bounceWalls,
+        updateBall,
+      };
+      window.Game = Game;
+    })();
+  </script>
+</body>
+</html>

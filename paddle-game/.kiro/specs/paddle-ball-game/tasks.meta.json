@@ -1,0 +1,368 @@
+{
+  "pbtResults": {
+    "2.3 Write property test for the initial state": {
+      "status": "passed",
+      "lastRunTimestamp": 1791246105279
+    },
+    "3.2 Write property test for paddle directional movement": {
+      "status": "passed",
+      "lastRunTimestamp": 1791248494164
+    },
+    "3.3 Write property test for paddle bounds": {
+      "status": "passed",
+      "lastRunTimestamp": 1791248503230
+    }
+  },
+  "executionHistory": {
+    "1.1 Create `index.html` with canvas, score display, restart button, and message elements plus inline `<style>` and an inline `<script>` skeleton that defines a `window.Game` namespace": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824565
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244828962
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791245400993
+      }
+    ],
+    "1.2 Set up the test infrastructure": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824624
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244830778
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791245402242
+      }
+    ],
+    "2.1 Define game constants, `STATES` enum, and data-model field contracts in the inline script": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824657
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791245405700
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791245571277
+      }
+    ],
+    "2.2 Implement `createInitialState()` state factory": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824696
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791245574381
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246063867
+      }
+    ],
+    "2.3 Write property test for the initial state": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824717
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246065411
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246177435
+      }
+    ],
+    "3.1 Implement `updatePaddle()` and `clampPaddle()` pure functions": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824747
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246066778
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246479695
+      }
+    ],
+    "3.2 Write property test for paddle directional movement": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824770
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246481536
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791248511053
+      }
+    ],
+    "3.3 Write property test for paddle bounds": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824795
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246482860
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791248512419
+      }
+    ],
+    "4.1 Implement `updateBall()` and `bounceWalls()` with a `ballHitsWall()` helper": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824816
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246484399
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791248514270
+      }
+    ],
+    "4.2 Write property test for constant ball speed": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824839
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791248516490
+      }
+    ],
+    "4.3 Write property test for wall bounces": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824862
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791248517937
+      }
+    ],
+    "5.1 Implement `collidePaddle()` with a `ballHitsPaddle()` helper, plus the bottom-edge game-over transition": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824882
+      },
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791248519420
+      }
+    ],
+    "5.2 Write property test for paddle bounce direction": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824906
+      }
+    ],
+    "5.3 Write property test for bottom-edge game over": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824929
+      }
+    ],
+    "6.1 Implement `collideBricks()` with a `ballHitsBrick()` helper, plus `checkWin()`": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824949
+      }
+    ],
+    "6.2 Write property test for brick collision effects": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244824972
+      }
+    ],
+    "6.3 Write property test for the win transition": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825007
+      }
+    ],
+    "7.1 Implement `update(state)` orchestrating all logic in order with status checks": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825036
+      }
+    ],
+    "7.2 Write property test for terminal-state freeze": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825056
+      }
+    ],
+    "7.3 Implement `reset(state)` function": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825079
+      }
+    ],
+    "7.4 Write property test for reset": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825099
+      }
+    ],
+    "8. Checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825123
+      }
+    ],
+    "9.1 Implement `clearCanvas()`, `drawBall()`, `drawPaddle()`, and `drawBricks()`": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825146
+      }
+    ],
+    "9.2 Implement `drawScore()` and `drawMessages()`": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825171
+      }
+    ],
+    "9.3 Write unit tests for score display and terminal messages": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825191
+      }
+    ],
+    "9.4 Write unit tests for rendering/logic edge cases": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825213
+      }
+    ],
+    "10.1 Implement the input handler": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825233
+      }
+    ],
+    "10.2 Implement the game loop with a context guard": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825256
+      }
+    ],
+    "10.3 Wire input, update, render, and loop together and start the game on load": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825279
+      }
+    ],
+    "11. Final checkpoint - Ensure all tests pass": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825299
+      }
+    ],
+    "12.1 Implement smoke/static checks for single-file packaging": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825323
+      }
+    ],
+    "12.2 Write optional Playwright integration test": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791244825346
+      }
+    ],
+    "1. Set up HTML skeleton and test harness": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791245402276
+      }
+    ],
+    "2. Define constants, data models, and state factory": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791246177463
+      }
+    ],
+    "3. Implement paddle movement logic": [
+      {
+        "executionId": "2ef662e3-b6ef-4384-9c43-3bab544fb3c9",
+        "chatSessionId": "sess_ff5b938f-1e1f-4a51-a10c-6cdeb3bc9b92",
+        "timestamp": 1791248512445
+      }
+    ]
+  }
+}
